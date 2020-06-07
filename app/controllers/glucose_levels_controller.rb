@@ -1,36 +1,34 @@
+# frozen_string_literal: true
+
 class GlucoseLevelsController < ApplicationController
-  before_action :set_glucose_level, only: [:show, :edit, :update, :destroy]
+  before_action :set_glucose_level, only: %i[show edit update destroy]
 
   # GET /glucose_levels
   # GET /glucose_levels.json
   def index
-    @glucose_levels = GlucoseLevel.all
+    @glucose_levels = GlucoseLevel.current_user_glucose_levels(current_user.id)
   end
 
   # GET /glucose_levels/1
   # GET /glucose_levels/1.json
-  def show
+  def show; end
+
+  def new_daily_report; end
+
+  def daily_report
+    @glucose_levels = GlucoseLevel.daily_report(valid_params, current_user.id)
   end
 
-  def new_daily_report    
-  end
-
-  def daily_report    
-    @glucose_levels = GlucoseLevel.daily_report(valid_params)
-  end
-
-  def new_month_to_date_report
-  end
+  def new_month_to_date_report; end
 
   def month_to_date_report
-    @glucose_levels = GlucoseLevel.month_to_date_report(valid_params["end_date"])
+    @glucose_levels = GlucoseLevel.month_to_date_report(valid_params['end_date'], current_user.id)
   end
 
-  def new_monthly_report
-  end
+  def new_monthly_report; end
 
   def monthly_report
-    @glucose_levels = GlucoseLevel.monthly_report(valid_params["end_date"])    
+    @glucose_levels = GlucoseLevel.monthly_report(valid_params['end_date'], current_user.id)
   end
 
   # GET /glucose_levels/new
@@ -39,15 +37,14 @@ class GlucoseLevelsController < ApplicationController
   end
 
   # GET /glucose_levels/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /glucose_levels
   # POST /glucose_levels.json
   def create
-    @glucose_level = GlucoseLevel.where(observation_date: glucose_level_params["observation_date"], user_id: current_user.id).first
+    @glucose_level = GlucoseLevel.where(observation_date: glucose_level_params['observation_date'], user_id: current_user.id).first
     if @glucose_level.present?
-      @glucose_level = @glucose_level.add_observation(glucose_level_params)
+      @glucose_level = @glucose_level.add_observation(glucose_level_params[:observations])
     else
       @glucose_level = GlucoseLevel.create_new_observation(glucose_level_params, current_user.id)
     end
@@ -88,17 +85,18 @@ class GlucoseLevelsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_glucose_level
-      @glucose_level = GlucoseLevel.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def glucose_level_params
-      params.require(:glucose_level).permit(:observation_date, :user_id, :observations)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_glucose_level
+    @glucose_level = GlucoseLevel.find(params[:id])
+  end
 
-    def valid_params
-      params.permit(:start_date, :end_date)
-    end
+  # Only allow a list of trusted parameters through.
+  def glucose_level_params
+    params.require(:glucose_level).permit(:observation_date, :user_id, :observations)
+  end
+
+  def valid_params
+    params.permit(:start_date, :end_date)
+  end
 end

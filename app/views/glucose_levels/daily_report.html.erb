@@ -15,7 +15,7 @@
     <% @glucose_levels.each do |glucose_level| %>
       <tr>
         <td><%= glucose_level.observation_date.strftime("%d/%m/%Y") %></td>
-        <td><%= glucose_level.observations.values %></td>
+        <td><%= glucose_level.observations.values.join(', ') %></td>
         <td><%= link_to 'Show', glucose_level %></td>
         <td><%= link_to 'Edit', edit_glucose_level_path(glucose_level) %></td>
         <td><%= link_to 'Destroy', glucose_level, method: :delete, data: { confirm: 'Are you sure?' } %></td>

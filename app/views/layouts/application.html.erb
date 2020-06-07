@@ -18,22 +18,20 @@
 
   <body>
     <% if user_signed_in? %>
-      <li>
-      <%= link_to('Logout', destroy_user_session_path, method: :delete) %>        
-      </li>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home Page</a></li>
+          <li class="breadcrumb-item"><a href="/new_daily_report">Daily Report</a></li>
+          <li class="breadcrumb-item"><a href="/new_month_to_date_report">Month to Date Report</a></li>
+          <li class="breadcrumb-item"><a href="/new_monthly_report">Monthly Report</a></li>
+          <li class="breadcrumb-item"><%= link_to('Logout', destroy_user_session_path, method: :delete) %></li>
+        </ol>
+      </nav>       
     <% else %>
       <li>
       <%= link_to('Login', new_user_session_path) %>  
       </li>
-    <% end %>
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">Home Page</a></li>
-        <li class="breadcrumb-item"><a href="/new_daily_report">Daily Report</a></li>
-        <li class="breadcrumb-item"><a href="/new_month_to_date_report">Month to Date Report</a></li>
-        <li class="breadcrumb-item"><a href="/new_monthly_report">Monthly Report</a></li>
-      </ol>
-    </nav>    
+    <% end %>       
     <%= yield %>
   </body>
 </html>
