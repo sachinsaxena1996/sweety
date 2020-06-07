@@ -1,0 +1,13 @@
+<%= form_tag('/daily_report') do -%>
+  <div class="form-group">
+    <%= label_tag 'start_date_lb', 'Start Date' %>
+    <%= date_field_tag(:start_date, Date.today, class: "form-control")%>
+  </div>
+  <div class="form-group">
+    <%= label_tag 'end_date_lb', 'End Date' %>
+    <%= date_field_tag(:end_date, Date.today, class: "form-control")%>
+  </div>  
+  <div class="form-group">
+    <%= submit_tag 'Generate Daily Report', class: "btn btn-primary" %>
+  </div>
+<% end -%>
