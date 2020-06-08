@@ -17,7 +17,7 @@
 ActiveRecord::Schema.define(version: 20_200_605_084_738) do
   create_table 'glucose_levels',
                options:
-               'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci',
+            'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci',
                force: :cascade do |t|
     t.date 'observation_date'
     t.integer 'user_id'

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# GlucoseLevel Model
 class GlucoseLevel < ApplicationRecord
   store :observations, coder: JSON
   validate :observations_per_day_count
@@ -8,9 +9,11 @@ class GlucoseLevel < ApplicationRecord
   belongs_to :user
 
   def observations_per_day_count
-    if observations.count > 4
-      errors.add(:observations, 'you can have only 4 observations per day')
-    end
+    return true unless observations.count > 4
+
+    errors.add(:observations,
+               'you can have only 4 observations per day')
+    false
   end
 
   def add_observation(observation)
@@ -28,15 +31,20 @@ class GlucoseLevel < ApplicationRecord
   end
 
   def self.daily_report(valid_params, user_id)
-    GlucoseLevel.current_user_glucose_levels(user_id).where('observation_date >= ? AND observation_date <= ?', valid_params['start_date'], valid_params['end_date'])
+    GlucoseLevel.current_user_glucose_levels(user_id)
+                .where('observation_date >= ? AND observation_date <= ?',
+                       valid_params['start_date'], valid_params['end_date'])
   end
 
   def self.month_to_date_report(end_date, user_id)
     arr = end_date.split('-')
     arr[2] = '01'
-    GlucoseLevel.current_user_glucose_levels(user_id).where('observation_date >= ? AND observation_date <= ?', arr.join('-'), end_date)
+    GlucoseLevel.current_user_glucose_levels(user_id)
+                .where('observation_date >= ? AND observation_date <= ?',
+                       arr.join('-'), end_date)
   end
 
+  # rubocop:disable Metrics/AbcSize
   def self.monthly_report(end_date, user_id)
     arr = end_date.split('-')
     arr[1] = (arr[1].to_i - 1)
@@ -45,6 +53,9 @@ class GlucoseLevel < ApplicationRecord
     arr[2] = '31' if arr[1].to_i.odd?
     arr[2] = '30' if arr[1].to_i.even?
     month_end_date = arr.join('-')
-    GlucoseLevel.current_user_glucose_levels(user_id).where('observation_date >= ? AND observation_date <= ?', month_start_date, month_end_date)
+    GlucoseLevel.current_user_glucose_levels(user_id)
+                .where('observation_date >= ? AND observation_date <= ?',
+                       month_start_date, month_end_date)
   end
+  # rubocop:enable Metrics/AbcSize
 end
